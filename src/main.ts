@@ -6,16 +6,16 @@ import {
 	Notice,
 	Plugin,
 } from 'obsidian';
+
 import {
 	DEFAULT_SETTINGS,
-	MyPluginSettings,
+	SimpleFormatterPluginSettings,
 	SampleSettingTab,
 } from './settings';
 
-// Remember to rename these classes and interfaces!
 
-export default class MyPlugin extends Plugin {
-	settings!: MyPluginSettings;
+export default class SimpleFormatterPlugin extends Plugin {
+	settings!: SimpleFormatterPluginSettings;
 
 	async onload() {
 		await this.loadSettings();
@@ -92,7 +92,7 @@ export default class MyPlugin extends Plugin {
 		this.settings = Object.assign(
 			{},
 			DEFAULT_SETTINGS,
-			(await this.loadData()) as Partial<MyPluginSettings>,
+			(await this.loadData()) as Partial<SimpleFormatterPluginSettings>,
 		);
 	}
 
@@ -100,6 +100,7 @@ export default class MyPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 }
+
 
 class SampleModal extends Modal {
 	onOpen() {
