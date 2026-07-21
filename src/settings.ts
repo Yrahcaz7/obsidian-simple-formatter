@@ -2,15 +2,17 @@ import { App, PluginSettingTab, Setting } from 'obsidian';
 import SimpleFormatterPlugin from './main';
 
 export interface SimpleFormatterPluginSettings {
+	htmlMode: boolean;
+	indentAmount: number;
 	sectionBreak: string;
 	sectionBreakAlign: string;
-	indentAmount: number;
 }
 
 export const DEFAULT_SETTINGS: SimpleFormatterPluginSettings = {
+	htmlMode: true,
+	indentAmount: 2,
 	sectionBreak: '⁂',
 	sectionBreakAlign: 'center',
-	indentAmount: 2,
 };
 
 export class SimpleFormatterSettingTab extends PluginSettingTab {
@@ -25,6 +27,20 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 
 		containerEl.empty();
+
+		new Setting(containerEl).setName('General').setHeading();
+
+		new Setting(containerEl)
+			.setName('HTML Mode')
+			.setDesc('When enabled, uses HTML paragraphs for alignment and indentation. This has greater cross-compatability than the default, but it disallows Markdown syntax inside aligned and indented blocks.')
+			.addToggle(toggle =>
+				toggle
+					.setValue(this.plugin.settings.htmlMode)
+					.onChange(async value => {
+						this.plugin.settings.htmlMode = value;
+						await this.plugin.saveSettings();
+					}),
+			);
 
 		new Setting(containerEl).setName('Indentation').setHeading();
 
