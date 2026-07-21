@@ -50,6 +50,12 @@ export default class SimpleFormatterPlugin extends Plugin {
 			editorCallback: (editor: Editor) => alignParagraph(editor, "right"),
 		});
 
+		this.addCommand({
+			id: 'align-to-justify',
+			name: 'Justify line(s)',
+			editorCallback: (editor: Editor) => alignParagraph(editor, "justify"),
+		});
+
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SampleSettingTab(this.app, this));
 	}
