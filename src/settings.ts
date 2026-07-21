@@ -4,11 +4,13 @@ import SimpleFormatterPlugin from './main';
 export interface SimpleFormatterPluginSettings {
 	sectionBreak: string;
 	sectionBreakAlign: string;
+	indentAmount: number;
 }
 
 export const DEFAULT_SETTINGS: SimpleFormatterPluginSettings = {
 	sectionBreak: '⁂',
 	sectionBreakAlign: 'center',
+	indentAmount: 2,
 };
 
 export class SimpleFormatterSettingTab extends PluginSettingTab {
@@ -23,6 +25,22 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 
 		containerEl.empty();
+
+		new Setting(containerEl).setName('Indentation').setHeading();
+
+		new Setting(containerEl)
+			.setName('Indentation amount')
+			.setDesc('The amount of indentation used by the "Indent/Unindent line(s)" commands.')
+			.addSlider(text =>
+				text
+					.setLimits(1, 4, 0.5)
+					.setDynamicTooltip()
+					.setValue(this.plugin.settings.indentAmount)
+					.onChange(async value => {
+						this.plugin.settings.indentAmount = value;
+						await this.plugin.saveSettings();
+					}),
+			);
 
 		new Setting(containerEl).setName('Section breaks').setHeading();
 
@@ -41,7 +59,7 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Section break alignment')
-			.setDesc('The alignment of section breaks inserted by the "Insert section break" command.')
+			.setDesc('The alignment of the characters inserted by the "Insert section break" command.')
 			.addDropdown(dropdown =>
 				dropdown
 					.addOption('left', 'Left')

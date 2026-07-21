@@ -13,10 +13,10 @@ function alignLines(lines: string, newTextAlign: string): string {
 
 function indentLines(lines: string, indentIncrement: number): string {
 	return lines.replace(
-		/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+)em\s*)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
+		/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+(?:\.\d+)?)em\s*)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
 		(_match, preStyles = "", oldIndentRule = "", oldIndentAmount = "", postStyles = "", tagContent = "", noTagContent = "") => {
 			const indentPrefix = (oldIndentRule.startsWith(";") ? "; " : "");
-			const newIndentAmount = Math.max((parseInt(oldIndentAmount, 10) || 0) + indentIncrement, 0);
+			const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
 			return `<p style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}">${noTagContent || tagContent}</p>`;
 		},
 	);
@@ -60,14 +60,14 @@ export default class SimpleFormatterPlugin extends Plugin {
 			id: 'increase-indentation',
 			name: 'Indent line(s)',
 			icon: 'list-indent-increase',
-			editorCallback: (editor: Editor) => editor.replaceSelection(indentLines(editor.getSelection(), 2)),
+			editorCallback: (editor: Editor) => editor.replaceSelection(indentLines(editor.getSelection(), this.settings.indentAmount)),
 		});
 
 		this.addCommand({
 			id: 'decrease-indentation',
 			name: 'Unindent line(s)',
 			icon: 'list-indent-decrease',
-			editorCallback: (editor: Editor) => editor.replaceSelection(indentLines(editor.getSelection(), -2)),
+			editorCallback: (editor: Editor) => editor.replaceSelection(indentLines(editor.getSelection(), -this.settings.indentAmount)),
 		});
 
 		this.addCommand({
