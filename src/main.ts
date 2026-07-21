@@ -1,28 +1,23 @@
 import {
 	Editor,
-	MarkdownView,
-	MarkdownFileInfo,
-	Modal,
-	Notice,
 	Plugin,
 } from 'obsidian';
 
 import {
 	DEFAULT_SETTINGS,
 	SimpleFormatterPluginSettings,
-	SampleSettingTab,
+	SimpleFormatterSettingTab,
 } from './settings';
 
 
-function alignParagraph(editor: Editor, newTextAlign: string) {
-	const selection = editor.getSelection();
-	editor.replaceSelection(selection.replace(
+function alignLines(lines: string, newTextAlign: string) {
+	return lines.replace(
 		/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
 		(_match, preStyles = "", oldTextAlign = "", postStyles = "", tagContent = "", noTagContent = "") => {
 			const alignPrefix = (oldTextAlign.startsWith(";") ? "; " : "");
 			return `<p style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}">${noTagContent || tagContent}</p>`;
 		},
-	));
+	);
 }
 
 
@@ -35,29 +30,34 @@ export default class SimpleFormatterPlugin extends Plugin {
 		this.addCommand({
 			id: 'align-to-left',
 			name: 'Align line(s) to left',
-			editorCallback: (editor: Editor) => alignParagraph(editor, "left"),
+			editorCallback: (editor: Editor) => editor.replaceSelection(alignLines(editor.getSelection(), "left")),
 		});
 
 		this.addCommand({
 			id: 'align-to-center',
 			name: 'Align line(s) to center',
-			editorCallback: (editor: Editor) => alignParagraph(editor, "center"),
+			editorCallback: (editor: Editor) => editor.replaceSelection(alignLines(editor.getSelection(), "center")),
 		});
 
 		this.addCommand({
 			id: 'align-to-right',
 			name: 'Align line(s) to right',
-			editorCallback: (editor: Editor) => alignParagraph(editor, "right"),
+			editorCallback: (editor: Editor) => editor.replaceSelection(alignLines(editor.getSelection(), "right")),
 		});
 
 		this.addCommand({
 			id: 'align-to-justify',
 			name: 'Justify line(s)',
-			editorCallback: (editor: Editor) => alignParagraph(editor, "justify"),
+			editorCallback: (editor: Editor) => editor.replaceSelection(alignLines(editor.getSelection(), "justify")),
 		});
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addCommand({
+			id: 'insert-section-break',
+			name: 'Insert Section Break',
+			editorCallback: (editor: Editor) => editor.replaceRange(alignLines(this.settings.sectionBreak || DEFAULT_SETTINGS.sectionBreak, "center"), editor.getCursor()),
+		});
+
+		this.addSettingTab(new SimpleFormatterSettingTab(this.app, this));
 	}
 
 	async onunload() {}
