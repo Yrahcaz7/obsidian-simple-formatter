@@ -14,6 +14,18 @@ import {
 } from './settings';
 
 
+function alignParagraph(editor: Editor, newTextAlign: string) {
+	const selection = editor.getSelection();
+	editor.replaceSelection(selection.replace(
+		/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
+		(_match, preStyles = "", oldTextAlign = "", postStyles = "", tagContent = "", noTagContent = "") => {
+			const alignPrefix = (oldTextAlign.startsWith(";") ? "; " : "");
+			return `<p style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}">${noTagContent || tagContent}</p>`;
+		},
+	));
+}
+
+
 export default class SimpleFormatterPlugin extends Plugin {
 	settings!: SimpleFormatterPluginSettings;
 
@@ -21,18 +33,21 @@ export default class SimpleFormatterPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.addCommand({
-			id: 'center-paragraph',
-			name: 'Center paragraph',
-			editorCallback: (editor: Editor) => {
-				const selection = editor.getSelection();
-				editor.replaceSelection(selection.replace(
-					/<(?i:p)\s+(.+\s+)?(?i:style)="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*"(\s*.+?)?>(.+?)<\/(?i:p)>/gmu,
-					(_match, preAttrs = "", preStyles = "", textAlign = "", postStyles = "", postAttrs = "", content = "") => {
-						const alignPrefix = (textAlign.startsWith(";") ? "; " : "");
-						return `<p ${preAttrs}style="${preStyles}${alignPrefix}text-align: center${postStyles}"${postAttrs}>${content}</p>`;
-					},
-				));
-			},
+			id: 'align-to-left',
+			name: 'Align line(s) to left',
+			editorCallback: (editor: Editor) => alignParagraph(editor, "left"),
+		});
+
+		this.addCommand({
+			id: 'align-to-center',
+			name: 'Align line(s) to center',
+			editorCallback: (editor: Editor) => alignParagraph(editor, "center"),
+		});
+
+		this.addCommand({
+			id: 'align-to-right',
+			name: 'Align line(s) to right',
+			editorCallback: (editor: Editor) => alignParagraph(editor, "right"),
 		});
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
