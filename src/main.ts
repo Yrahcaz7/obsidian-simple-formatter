@@ -20,30 +20,35 @@ export default class SimpleFormatterPlugin extends Plugin {
 		this.addCommand({
 			id: 'align-to-left',
 			name: 'Align line(s) to left',
+			icon: 'text-align-start',
 			editorCallback: (editor: Editor) => editor.replaceSelection(alignLines(editor.getSelection(), 'left')),
 		});
 
 		this.addCommand({
 			id: 'align-to-center',
 			name: 'Align line(s) to center',
+			icon: 'text-align-center',
 			editorCallback: (editor: Editor) => editor.replaceSelection(alignLines(editor.getSelection(), 'center')),
 		});
 
 		this.addCommand({
 			id: 'align-to-right',
 			name: 'Align line(s) to right',
+			icon: 'text-align-end',
 			editorCallback: (editor: Editor) => editor.replaceSelection(alignLines(editor.getSelection(), 'right')),
 		});
 
 		this.addCommand({
 			id: 'align-to-justify',
 			name: 'Justify line(s)',
+			icon: 'text-align-justify',
 			editorCallback: (editor: Editor) => editor.replaceSelection(alignLines(editor.getSelection(), 'justify')),
 		});
 
 		this.addCommand({
 			id: 'insert-section-break',
 			name: 'Insert Section Break',
+			icon: 'section',
 			editorCallback: (editor: Editor) => editor.replaceRange(alignLines(this.settings.sectionBreak || DEFAULT_SETTINGS.sectionBreak, this.settings.sectionBreakAlign), editor.getCursor()),
 		});
 
