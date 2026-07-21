@@ -23,7 +23,8 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 
 		containerEl.empty();
-		containerEl.createEl('h2', { text: 'Section breaks' });
+
+		new Setting(containerEl).setName('Section breaks').setHeading();
 
 		new Setting(containerEl)
 			.setName('Section break indicator')
