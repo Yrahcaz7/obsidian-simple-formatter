@@ -9,7 +9,7 @@ export interface SimpleFormatterPluginSettings {
 }
 
 export const DEFAULT_SETTINGS: SimpleFormatterPluginSettings = {
-	htmlMode: true,
+	htmlMode: false,
 	indentAmount: 2,
 	sectionBreak: '⁂',
 	sectionBreakAlign: 'center',
@@ -47,8 +47,8 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Indentation amount')
 			.setDesc('The amount of indentation used by the "Indent/Unindent line(s)" commands.')
-			.addSlider(text =>
-				text
+			.addSlider(slider =>
+				slider
 					.setLimits(1, 4, 0.5)
 					.setDynamicTooltip()
 					.setValue(this.plugin.settings.indentAmount)
