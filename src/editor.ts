@@ -39,8 +39,8 @@ class SimpleFormatPlugin implements PluginValue {
 						line = view.state.doc.line(prevLine.number + 1);
 					}
 					prevLine = line;
-				} catch (err) {
-					break;
+				} catch (error) {
+					break; // stop when there are no more visible lines left
 				}
 				// Skip already visited lines
 				if (visitedLines.has(line.number)) {
@@ -55,6 +55,17 @@ class SimpleFormatPlugin implements PluginValue {
 				if (!line.text.endsWith('}')) continue;
 				const matches = line.text.match(/\s*\{\s*style="(.+)"\s*\}$/u);
 				if (!matches) continue;
+				// Skip codeblocks and footnotes
+				try {
+					if ([line.from, line.to].some(position => {
+						const parentClasses = view?.domAtPos(position)?.node?.parentElement?.classList;
+						return parentClasses?.contains('cm-hmd-codeblock') || parentClasses?.contains('HyperMD-footnote');
+					})) {
+						continue;
+					}
+				} catch (error) {
+					// continue on if parent element does not exist
+				}
 				// Apply formatting
 				let styles = matches[1];
 				if (styles) {
