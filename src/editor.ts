@@ -1,5 +1,4 @@
-import { syntaxTree } from '@codemirror/language';
-import { RangeSetBuilder } from '@codemirror/state';
+import { Line, RangeSetBuilder } from '@codemirror/state';
 import {
 	Decoration,
 	DecorationSet,
@@ -24,50 +23,49 @@ class SimpleFormatPlugin implements PluginValue {
 
 	destroy() {}
 
-	buildDecorations(view: EditorView): DecorationSet {
+	private buildDecorations(view: EditorView): DecorationSet {
 		const builder = new RangeSetBuilder<Decoration>();
 
 		for (const range of view.visibleRanges) {
-			syntaxTree(view.state).iterate({
-				from: range.from,
-				to: range.to,
-				enter(node) {
-					// Skip selected text
-					if (view.state.selection.ranges.some(selectedRange => (selectedRange.from <= node.to) && (selectedRange.to >= node.from))) {
-						return;
-					}
-
-					// Parse format syntax
-					const nodeContent = view.state.sliceDoc(node.from, node.to);
-					if (!nodeContent.endsWith('}')) return;
-					const matches = nodeContent.match(/\s*\{\s*style="(.+)"\s*\}$/u);
-					if (!matches) return;
-
-					// Apply formatting
-					const styles = matches[1];
-					if (styles) {
-						const line = view.state.doc.lineAt(node.from);
-						builder.add(
-							line.from,
-							line.from,
-							Decoration.line({
-								attributes: {style: styles},
-							}),
-						);
-					}
-
-					// Hide format syntax
-					const startIndex = nodeContent.lastIndexOf(matches[0]);
+			let prevLine: Line | undefined;
+			while (true) {
+				// Get next line
+				let line: Line;
+				try {
+					line = view.state.doc.lineAt(prevLine === undefined ? range.from : prevLine.to + 1);
+					prevLine = line;
+				} catch (err) {
+					break;
+				}
+				// Skip selected text
+				if (view.state.selection.ranges.some(selectedRange => (selectedRange.from <= line.to) && (selectedRange.to >= line.from))) {
+					continue;
+				}
+				// Parse format syntax
+				if (!line.text.endsWith('}')) continue;
+				const matches = line.text.match(/\s*\{\s*style="(.+)"\s*\}$/u);
+				if (!matches) continue;
+				// Apply formatting
+				let styles = matches[1];
+				if (styles) {
+					styles = styles.replace(/;/g, " !important;");
+					if (!styles.match(/;\s*$/)) styles += " !important";
 					builder.add(
-						node.from + startIndex,
-						node.to,
-						Decoration.replace({}),
+						line.from,
+						line.from,
+						Decoration.line({
+							attributes: {style: styles},
+						}),
 					);
-
-					// Skip child nodes
-					return false;
-				},
-			});
+				}
+				// Hide format syntax
+				const startIndex = line.text.lastIndexOf(matches[0]);
+				builder.add(
+					line.from + startIndex,
+					line.to,
+					Decoration.replace({}),
+				);
+			}
 		}
 		return builder.finish();
 	}
