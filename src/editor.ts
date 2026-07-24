@@ -25,6 +25,7 @@ class SimpleFormatPlugin implements PluginValue {
 
 	private buildDecorations(view: EditorView): DecorationSet {
 		const builder = new RangeSetBuilder<Decoration>();
+		const visitedLines = new Set<number>();
 
 		for (const range of view.visibleRanges) {
 			let prevLine: Line | undefined;
@@ -32,11 +33,20 @@ class SimpleFormatPlugin implements PluginValue {
 				// Get next line
 				let line: Line;
 				try {
-					line = view.state.doc.lineAt(prevLine === undefined ? range.from : prevLine.to + 1);
+					if (prevLine === undefined) {
+						line = view.state.doc.lineAt(range.from);
+					} else {
+						line = view.state.doc.line(prevLine.number + 1);
+					}
 					prevLine = line;
 				} catch (err) {
 					break;
 				}
+				// Skip already visited lines
+				if (visitedLines.has(line.number)) {
+					continue;
+				}
+				visitedLines.add(line.number);
 				// Skip selected text
 				if (view.state.selection.ranges.some(selectedRange => (selectedRange.from <= line.to) && (selectedRange.to >= line.from))) {
 					continue;
