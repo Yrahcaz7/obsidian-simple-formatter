@@ -55,11 +55,11 @@ class SimpleFormatPlugin implements PluginValue {
 				if (!line.text.endsWith('}')) continue;
 				const matches = line.text.match(/\s*\{\s*style="(.+)"\s*\}$/u);
 				if (!matches) continue;
-				// Skip codeblocks and footnotes
+				// Skip codeblocks
 				try {
 					if ([line.from, line.to].some(position => {
 						const parentClasses = view?.domAtPos(position)?.node?.parentElement?.classList;
-						return parentClasses?.contains('cm-hmd-codeblock') || parentClasses?.contains('HyperMD-footnote');
+						return parentClasses?.contains('cm-hmd-codeblock');
 					})) {
 						continue;
 					}

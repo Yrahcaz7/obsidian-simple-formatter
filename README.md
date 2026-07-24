@@ -22,12 +22,12 @@ The commands can be customized using the following settings:
 
 ## Experimental features
 
-When embedding a note inside another note, you can align the *content* of the embedded note (sans the tile) using the `align` commands or manually adding the style definition:
+Styling footnotes is currently supported in editing mode, but not reading mode.
+
+When embedding a note inside another note, you can align the *content* of the embedded note (sans the tile) by using an `align` command, or manually adding the style definition:
 
 ```markdown
 ![[Embedded note]] {style="text-align: center"}
 ```
 
-You can also indent the whole embedded note with the `embed` commands as well.
-
-However, these features are currently not supported in reading mode.
+You can also indent the whole embedded note with the `indent` commands as well.
