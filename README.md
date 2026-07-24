@@ -22,7 +22,7 @@ The commands can be customized using the following settings:
 
 ## Experimental features
 
-Styling footnotes is currently supported in editing mode, but not reading mode.
+Formatting footnotes is currently supported in editing mode, but not reading mode.
 
 When embedding a note inside another note, you can align the *content* of the embedded note (sans the tile) by using an `align` command, or manually adding the style definition:
 
@@ -31,3 +31,7 @@ When embedding a note inside another note, you can align the *content* of the em
 ```
 
 You can also indent the whole embedded note with the `indent` commands as well.
+
+## Unsupported features
+
+Currently, the contents of callouts and tables cannot be formatted by this plugin.
