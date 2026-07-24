@@ -2,48 +2,10 @@ import { Plugin } from 'obsidian';
 import { DEFAULT_SETTINGS, SimpleFormatterPluginSettings, SimpleFormatterSettingTab } from './settings';
 import { simpleFormatPlugin } from './editor'
 
+const CONTAINER_ELEMENTS = new Set<string>(['BLOCKQUOTE', 'OL', 'UL']);
+
 export default class SimpleFormatterPlugin extends Plugin {
 	settings!: SimpleFormatterPluginSettings;
-
-	private alignLines(lines: string, newTextAlign: string): string {
-		if (this.settings.htmlMode) {
-			return lines.replace(
-				/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
-				(_match, preStyles = "", oldTextAlign = "", postStyles = "", tagContent = "", noTagContent = "") => {
-					const alignPrefix = (oldTextAlign.startsWith(";") ? "; " : "");
-					return `<p style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}">${noTagContent || tagContent}</p>`;
-				},
-			);
-		}
-		return lines.replace(
-			/^(.*?)\s*(?:\{\s*style="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*"\s*\})?\s*$/gmu,
-			(_match, content = "", preStyles = "", oldTextAlign = "", postStyles = "") => {
-				const alignPrefix = (oldTextAlign.startsWith(";") ? "; " : "");
-				return `${content} {style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}"}`;
-			},
-		);
-	}
-
-	private indentLines(lines: string, indentIncrement: number): string {
-		if (this.settings.htmlMode) {
-			return lines.replace(
-				/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+(?:\.\d+)?)em\s*)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
-				(_match, preStyles = "", oldIndentRule = "", oldIndentAmount = "", postStyles = "", tagContent = "", noTagContent = "") => {
-					const indentPrefix = (oldIndentRule.startsWith(";") ? "; " : "");
-					const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
-					return `<p style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}">${noTagContent || tagContent}</p>`;
-				},
-			);
-		}
-		return lines.replace(
-			/^(.*?)\s*(?:\{\s*style="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+(?:\.\d+)?)em\s*)?(;.+?)?;?\s*"\s*\})?\s*$/gmu,
-			(_match, content = "", preStyles = "", oldIndentRule = "", oldIndentAmount = "", postStyles = "") => {
-				const indentPrefix = (oldIndentRule.startsWith(";") ? "; " : "");
-				const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
-				return `${content} {style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}"}`;
-			},
-		);
-	}
 
 	async onload() {
 		await this.loadSettings();
@@ -108,8 +70,48 @@ export default class SimpleFormatterPlugin extends Plugin {
 		this.addSettingTab(new SimpleFormatterSettingTab(this.app, this));
 	}
 
+	private alignLines(lines: string, newTextAlign: string): string {
+		if (this.settings.htmlMode) {
+			return lines.replace(
+				/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
+				(_match, preStyles = "", oldTextAlign = "", postStyles = "", tagContent = "", noTagContent = "") => {
+					const alignPrefix = (oldTextAlign.startsWith(";") ? "; " : "");
+					return `<p style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}">${noTagContent || tagContent}</p>`;
+				},
+			);
+		}
+		return lines.replace(
+			/^(.*?)\s*(?:\{\s*style="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*"\s*\})?\s*$/gmu,
+			(_match, content = "", preStyles = "", oldTextAlign = "", postStyles = "") => {
+				const alignPrefix = (oldTextAlign.startsWith(";") ? "; " : "");
+				return `${content} {style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}"}`;
+			},
+		);
+	}
+
+	private indentLines(lines: string, indentIncrement: number): string {
+		if (this.settings.htmlMode) {
+			return lines.replace(
+				/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+(?:\.\d+)?)em\s*)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
+				(_match, preStyles = "", oldIndentRule = "", oldIndentAmount = "", postStyles = "", tagContent = "", noTagContent = "") => {
+					const indentPrefix = (oldIndentRule.startsWith(";") ? "; " : "");
+					const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
+					return `<p style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}">${noTagContent || tagContent}</p>`;
+				},
+			);
+		}
+		return lines.replace(
+			/^(.*?)\s*(?:\{\s*style="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+(?:\.\d+)?)em\s*)?(;.+?)?;?\s*"\s*\})?\s*$/gmu,
+			(_match, content = "", preStyles = "", oldIndentRule = "", oldIndentAmount = "", postStyles = "") => {
+				const indentPrefix = (oldIndentRule.startsWith(";") ? "; " : "");
+				const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
+				return `${content} {style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}"}`;
+			},
+		);
+	}
+
 	private styleElement(element: Element) {
-		if (element.tagName === 'BLOCKQUOTE') {
+		if (CONTAINER_ELEMENTS.has(element.tagName)) {
 			for (const child of element.children) {
 				this.styleElement(child);
 			}
