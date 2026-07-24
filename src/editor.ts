@@ -58,8 +58,8 @@ class SimpleFormatPlugin implements PluginValue {
 				// Apply formatting
 				let styles = matches[1];
 				if (styles) {
-					styles = styles.replace(/;/g, " !important;");
-					if (!styles.match(/;\s*$/)) styles += " !important";
+					styles = styles.replace(/;/g, ' !important;');
+					if (!styles.match(/;\s*$/)) styles += ' !important';
 					builder.add(
 						line.from,
 						line.from,

@@ -101,20 +101,30 @@ export default class SimpleFormatterPlugin extends Plugin {
 
 		this.registerMarkdownPostProcessor(element => {
 			for (const child of element.children) {
-				if (!child.innerHTML.endsWith('}')) {
-					continue;
-				}
-				let childStyles = '';
-				child.innerHTML = child.innerHTML.replace(/\s*\{\s*style="(.+)"\s*\}$/u, (_match: string, styles: string) => {
-					childStyles = styles;
-					return '';
-				});
-				const oldStyles = child.getAttribute('style');
-				child.setAttribute('style', (oldStyles ? `${oldStyles}; ${childStyles}` : childStyles));
+				this.styleElement(child);
 			}
 		});
 
 		this.addSettingTab(new SimpleFormatterSettingTab(this.app, this));
+	}
+
+	private styleElement(element: Element) {
+		if (element.tagName === 'BLOCKQUOTE') {
+			for (const child of element.children) {
+				this.styleElement(child);
+			}
+			return;
+		}
+		if (!element.innerHTML.endsWith('}')) {
+			return;
+		}
+		let childStyles = '';
+		element.innerHTML = element.innerHTML.replace(/\s*\{\s*style="(.+)"\s*\}$/u, (_match: string, styles: string) => {
+			childStyles = styles;
+			return '';
+		});
+		const oldStyles = element.getAttribute('style');
+		element.setAttribute('style', (oldStyles ? `${oldStyles}; ${childStyles}` : childStyles));
 	}
 
 	async onunload() {}
