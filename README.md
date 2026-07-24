@@ -4,7 +4,7 @@ This plugin integrates some simple formatting options into [Obsidian.md](https:/
 
 To use these options, select one or more lines of text in a note file and open the [command palette](https://obsidian.md/help/plugins/command-palette).
 
-The avaiable commands are as follows:
+The available commands are as follows:
 
 - `Align line(s) to left/center/right`: Align each line in the selected text.
 - `Justify line(s)`: Justify each line in the selected text.
@@ -13,7 +13,21 @@ The avaiable commands are as follows:
 
 The commands can be customized using the following settings:
 
-- `HTML mode`: When enabled, HTML paragraphs are used for alignment and indentation. This has greater cross-compatability than the default, but it disallows Markdown syntax inside aligned and indented blocks.
+- `HTML mode`: When enabled, HTML paragraphs are used for alignment and indentation.
+    This has greater cross-compatability than the default, but it disallows Markdown syntax inside aligned and indented blocks.
 - `Indentation amount`: The amount of indentation used by the `Indent/Unindent line(s)` commands.
-- `Section break indicator`: The characters inserted by the `Insert section break` command. Defaults to `⁂` (U+2042, the unicode character "asterism").
+- `Section break indicator`: The characters inserted by the `Insert section break` command.
+    Defaults to `⁂` (U+2042, the unicode character "asterism").
 - `Section break alignment`: The alignment of inserted section breaks. This can be `left`, `center`, or `right`.
+
+## Experimental features
+
+When embedding a note inside another note, you can align the *content* of the embedded note (sans the tile) using the `align` commands or manually adding the style definition:
+
+```markdown
+![[Embedded note]] {style="text-align: center"}
+```
+
+You can also indent the whole embedded note with the `embed` commands as well.
+
+However, these features are currently not supported in reading mode.
