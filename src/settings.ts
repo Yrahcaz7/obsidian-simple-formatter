@@ -28,8 +28,6 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		new Setting(containerEl).setName('General').setHeading();
-
 		new Setting(containerEl)
 			.setName('HTML mode')
 			.setDesc('When enabled, HTML paragraphs are used for alignment and indentation. This has greater cross-compatability than the default, but it disallows Markdown syntax inside aligned and indented blocks. It also changes how such blocks are displayed in editing mode. (This only changes new placements, not old ones.)')
