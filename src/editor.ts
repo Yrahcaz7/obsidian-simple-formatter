@@ -53,7 +53,7 @@ class SimpleFormatPlugin implements PluginValue {
 				}
 				// Parse format syntax
 				if (!line.text.endsWith('}')) continue;
-				const matches = line.text.match(/\s*\{\s*style="(.+)"\s*\}$/u);
+				const matches = line.text.match(/\s*\{\s*style="([^"]+)"\s*\}$/u);
 				if (!matches) continue;
 				// Skip codeblocks
 				try {

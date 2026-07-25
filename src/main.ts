@@ -121,7 +121,7 @@ export default class SimpleFormatterPlugin extends Plugin {
 			return;
 		}
 		let childStyles = '';
-		element.innerHTML = element.innerHTML.replace(/\s*\{\s*style="(.+)"\s*\}$/u, (_match: string, styles: string) => {
+		element.innerHTML = element.innerHTML.replace(/\s*\{\s*style="([^"]+)"\s*\}$/u, (_match: string, styles: string) => {
 			childStyles = styles;
 			return '';
 		});
