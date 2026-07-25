@@ -56,7 +56,7 @@ export default class SimpleFormatterPlugin extends Plugin {
 			id: 'insert-section-break',
 			name: 'Insert Section Break',
 			icon: 'section',
-			editorCallback: editor => editor.replaceRange(this.alignLines(this.settings.sectionBreak || DEFAULT_SETTINGS.sectionBreak, this.settings.sectionBreakAlign), editor.getCursor()),
+			editorCallback: editor => editor.replaceRange(this.alignLines(this.settings.sectionBreak || DEFAULT_SETTINGS.sectionBreak, this.settings.sectionBreakAlign) + '\n', editor.getCursor()),
 		});
 
 		this.registerEditorExtension(simpleFormatPlugin);
@@ -74,16 +74,16 @@ export default class SimpleFormatterPlugin extends Plugin {
 		if (this.settings.htmlMode) {
 			return lines.replace(
 				/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
-				(_match, preStyles = "", oldTextAlign = "", postStyles = "", tagContent = "", noTagContent = "") => {
-					const alignPrefix = (oldTextAlign.startsWith(";") ? "; " : "");
+				(_match, preStyles = '', oldTextAlign = '', postStyles = '', tagContent = '', noTagContent = '') => {
+					const alignPrefix = (oldTextAlign.startsWith(';') ? '; ' : '');
 					return `<p style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}">${noTagContent || tagContent}</p>`;
 				},
 			);
 		}
 		return lines.replace(
 			/^(.*?)\s*(?:\{\s*style="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*"\s*\})?\s*$/gmu,
-			(_match, content = "", preStyles = "", oldTextAlign = "", postStyles = "") => {
-				const alignPrefix = (oldTextAlign.startsWith(";") ? "; " : "");
+			(_match, content = '', preStyles = '', oldTextAlign = '', postStyles = '') => {
+				const alignPrefix = (oldTextAlign.startsWith(';') ? '; ' : '');
 				return `${content} {style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}"}`;
 			},
 		);
@@ -93,8 +93,8 @@ export default class SimpleFormatterPlugin extends Plugin {
 		if (this.settings.htmlMode) {
 			return lines.replace(
 				/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+(?:\.\d+)?)em\s*)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
-				(_match, preStyles = "", oldIndentRule = "", oldIndentAmount = "", postStyles = "", tagContent = "", noTagContent = "") => {
-					const indentPrefix = (oldIndentRule.startsWith(";") ? "; " : "");
+				(_match, preStyles = '', oldIndentRule = '', oldIndentAmount = '', postStyles = '', tagContent = '', noTagContent = '') => {
+					const indentPrefix = (oldIndentRule.startsWith(';') ? '; ' : '');
 					const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
 					return `<p style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}">${noTagContent || tagContent}</p>`;
 				},
@@ -102,8 +102,8 @@ export default class SimpleFormatterPlugin extends Plugin {
 		}
 		return lines.replace(
 			/^(.*?)\s*(?:\{\s*style="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+(?:\.\d+)?)em\s*)?(;.+?)?;?\s*"\s*\})?\s*$/gmu,
-			(_match, content = "", preStyles = "", oldIndentRule = "", oldIndentAmount = "", postStyles = "") => {
-				const indentPrefix = (oldIndentRule.startsWith(";") ? "; " : "");
+			(_match, content = '', preStyles = '', oldIndentRule = '', oldIndentAmount = '', postStyles = '') => {
+				const indentPrefix = (oldIndentRule.startsWith(';') ? '; ' : '');
 				const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
 				return `${content} {style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}"}`;
 			},
