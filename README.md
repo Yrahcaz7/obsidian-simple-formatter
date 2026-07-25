@@ -2,14 +2,14 @@
 
 This plugin integrates some simple formatting options into [Obsidian.md](https://obsidian.md).
 
-To use these options, select one or more lines of text in a note file and open the [command palette](https://obsidian.md/help/plugins/command-palette).
+To use these options, select one or more lines of text in a note and open the [command palette](https://obsidian.md/help/plugins/command-palette).
 
 The available commands are as follows:
 
 - `Align line(s) to left/center/right`: Align each line in the selected text.
 - `Justify line(s)`: Justify each line in the selected text.
 - `Indent/Unindent line(s)`: Indent each line in the selected text.
-- `Insert Section Break`: Insert a customizable section break.
+- `Insert Section Break`: Insert a section break. This is especially useful with a keyboard shortcut (set in "Settings → Hotkeys").
 
 The commands can be customized using the following settings:
 
