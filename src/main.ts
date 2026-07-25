@@ -56,7 +56,12 @@ export default class SimpleFormatterPlugin extends Plugin {
 			id: 'insert-section-break',
 			name: 'Insert Section Break',
 			icon: 'section',
-			editorCallback: editor => editor.replaceRange(this.alignLines(this.settings.sectionBreak || DEFAULT_SETTINGS.sectionBreak, this.settings.sectionBreakAlign) + '\n', editor.getCursor()),
+			editorCallback: editor => {
+				const sectionBreak = this.alignLines(this.settings.sectionBreak || DEFAULT_SETTINGS.sectionBreak, this.settings.sectionBreakAlign) + '\n';
+				const cursorPosition = editor.getCursor();
+				editor.replaceRange(sectionBreak, cursorPosition);
+				editor.setCursor(cursorPosition.line + 1, 0);
+			},
 		});
 
 		this.registerEditorExtension(simpleFormatPlugin);
