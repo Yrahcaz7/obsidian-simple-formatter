@@ -25,6 +25,7 @@ class SimpleFormatPlugin implements PluginValue {
 
 	private buildDecorations(view: EditorView): DecorationSet {
 		const builder = new RangeSetBuilder<Decoration>();
+		const livePreview = view.dom.parentElement?.classList.contains('is-live-preview');
 		const visitedLines = new Set<number>();
 
 		for (const range of view.visibleRanges) {
@@ -47,10 +48,6 @@ class SimpleFormatPlugin implements PluginValue {
 					continue;
 				}
 				visitedLines.add(line.number);
-				// Skip selected text
-				if (view.state.selection.ranges.some(selectedRange => (selectedRange.from <= line.to) && (selectedRange.to >= line.from))) {
-					continue;
-				}
 				// Parse format syntax
 				if (!line.text.endsWith('}')) continue;
 				const matches = line.text.match(/\s*\{\s*style="([^"]+)"\s*\}$/u);
@@ -79,13 +76,15 @@ class SimpleFormatPlugin implements PluginValue {
 						}),
 					);
 				}
-				// Hide format syntax
-				const startIndex = line.text.lastIndexOf(matches[0]);
-				builder.add(
-					line.from + startIndex,
-					line.to,
-					Decoration.replace({}),
-				);
+				// Hide format syntax if in live preview mode and the line is not selected
+				if (livePreview && !view.state.selection.ranges.some(selectedRange => (selectedRange.from <= line.to) && (selectedRange.to >= line.from))) {
+					const startIndex = line.text.lastIndexOf(matches[0]);
+					builder.add(
+						line.from + startIndex,
+						line.to,
+						Decoration.replace({}),
+					);
+				}
 			}
 		}
 		return builder.finish();
