@@ -1,8 +1,8 @@
 {
 	"id": "simple-formatter",
 	"name": "Simple Formatter",
-	"version": "1.0.0",
-	"minAppVersion": "1.12.0",
+	"version": "0.1.0",
+	"minAppVersion": "1.11.0",
 	"description": "Align, justify, and indent lines of text. Insert customizable section breaks.",
 	"author": "Yrahcaz7",
 	"authorUrl": "https://github.com/Yrahcaz7",
