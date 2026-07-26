@@ -54,7 +54,7 @@ export default class SimpleFormatterPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'insert-section-break',
-			name: 'Insert Section Break',
+			name: 'Insert section break',
 			icon: 'section',
 			editorCallback: editor => {
 				const sectionBreak = this.alignLines(this.settings.sectionBreak || DEFAULT_SETTINGS.sectionBreak, this.settings.sectionBreakAlign) + '\n';
@@ -134,7 +134,7 @@ export default class SimpleFormatterPlugin extends Plugin {
 		element.setAttribute('style', (oldStyles ? `${oldStyles}; ${childStyles}` : childStyles));
 	}
 
-	async onunload() {}
+	onunload() {}
 
 	async loadSettings() {
 		this.settings = Object.assign(

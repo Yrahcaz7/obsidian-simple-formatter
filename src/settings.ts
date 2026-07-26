@@ -44,7 +44,7 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 
 		indentationGroup.addSetting(setting => setting
 			.setName('Indentation amount')
-			.setDesc('The amount of indentation used by the "Indent/Unindent line(s)" commands.')
+			.setDesc('The amount of indentation used by the "indent/unindent line(s)" commands.')
 			.addSlider(slider => slider
 				.setLimits(1, 4, 0.5)
 				.setDynamicTooltip()
@@ -60,7 +60,7 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 
 		sectionBreaksGroup.addSetting(setting => setting
 			.setName('Section break indicator')
-			.setDesc('The characters inserted by the "Insert section break" command. Defaults to "⁂".')
+			.setDesc('The characters inserted by the "insert section break" command. Defaults to "⁂".')
 			.addText(text => text
 				.setPlaceholder('Enter indicator here')
 				.setValue(this.plugin.settings.sectionBreak)
@@ -72,7 +72,7 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 		);
 		sectionBreaksGroup.addSetting(setting => setting
 			.setName('Section break alignment')
-			.setDesc('The alignment of the characters inserted by the "Insert section break" command.')
+			.setDesc('The alignment of the characters inserted by the "insert section break" command.')
 			.addDropdown(dropdown => dropdown
 				.addOption('left', 'Left')
 				.addOption('center', 'Center')

@@ -30,19 +30,18 @@ class SimpleFormatPlugin implements PluginValue {
 
 		for (const range of view.visibleRanges) {
 			let prevLine: Line | undefined;
+			const lastLine = view.state.doc.lineAt(range.to);
 			while (true) {
 				// Get next line
 				let line: Line;
-				try {
-					if (prevLine === undefined) {
-						line = view.state.doc.lineAt(range.from);
-					} else {
-						line = view.state.doc.line(prevLine.number + 1);
-					}
-					prevLine = line;
-				} catch (error) {
-					break; // stop when there are no more visible lines left
+				if (prevLine === undefined) {
+					line = view.state.doc.lineAt(range.from);
+				} else if (prevLine.number > lastLine.number || prevLine.number >= view.state.doc.lines) {
+					break;
+				} else {
+					line = view.state.doc.line(prevLine.number + 1);
 				}
+				prevLine = line;
 				// Skip already visited lines
 				if (visitedLines.has(line.number)) {
 					continue;
@@ -61,7 +60,11 @@ class SimpleFormatPlugin implements PluginValue {
 						continue;
 					}
 				} catch (error) {
-					// continue on if parent element does not exist
+					if (error instanceof TypeError) {
+						// continue on if parent element does not exist
+					} else {
+						throw error;
+					}
 				}
 				// Apply formatting
 				let styles = matches[1];
