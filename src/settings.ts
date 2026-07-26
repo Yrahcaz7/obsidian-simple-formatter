@@ -23,6 +23,38 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
+	getSettingDefinitions() {
+		return [{
+			name: 'HTML mode',
+			desc: 'When enabled, HTML paragraphs are used for alignment and indentation. This has greater cross-compatability than the default, but it disallows Markdown syntax inside aligned and indented blocks. It also changes how such blocks are displayed in editing mode. (This only changes new placements, not old ones.)',
+			control: { type: 'toggle', key: 'htmlMode' },
+		}, {
+			type: 'group',
+			heading: 'Indentation',
+			items: [{
+				name: 'Indentation amount',
+				desc: 'The amount of indentation used by the "indent/unindent line(s)" commands.',
+				control: { type: 'slider', key: 'indentAmount', min: 1, max: 4, step: 0.5 },
+			}],
+		}, {
+			type: 'group',
+			heading: 'Section breaks',
+			items: [{
+				name: 'Section break indicator',
+				desc: 'The characters inserted by the "insert section break" command. Defaults to "⁂".',
+				control: { type: 'text', key: 'sectionBreak', placeholder: 'Enter indicator here' },
+			}, {
+				name: 'Section break alignment',
+				desc: 'The alignment of the characters inserted by the "insert section break" command.',
+				control: {
+					type: 'dropdown',
+					key: 'sectionBreakAlign',
+					options: { left: 'Left', center: 'Center', right: 'Right' },
+				},
+			}],
+		}];
+	}
+
 	display() {
 		this.containerEl.empty();
 
