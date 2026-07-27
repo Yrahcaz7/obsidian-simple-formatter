@@ -78,18 +78,19 @@ export default class SimpleFormatterPlugin extends Plugin {
 	private alignText(text: string, newTextAlign: string): string {
 		if (this.settings.htmlMode) {
 			return text.replace(
-				/^(?:<(?i:p)(?: +(?i:style)=" *(.*? *)(;? *text-align: *.+?)?(;.+?)?;? *")? *>(.*?)<\/ *(?i:p) *>|(.*?))$/gmu,
-				(_match: string, preStyles: string = '', oldTextAlign: string = '', postStyles: string = '', tagContent: string = '', noTagContent: string = '') => {
+				/^(?:<(?i:p)(?: +(?i:style)=" *(.*? *)(?:;? *text-align: *.+?)?(;.+?)?;? *")? *>(.*?)<\/ *(?i:p) *>|(.*?))$/gmu,
+				(_match: string, preStyles: string = '', postStyles: string = '', tagContent: string = '', noTagContent: string = '') => {
 					const alignPrefix = (preStyles ? '; ' : '');
 					return `<p style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}">${noTagContent || tagContent}</p>`;
 				},
 			);
 		}
 		return text.split(/\n{2,}/g).map(paragraph => paragraph.replace(
-			/([^{]+)(?:\{ *?style=" *(.*? *?)(;? *?text-align: *.+?)?(;.+?)?;? *?" *?\})? */gu,
-			(_match: string, content: string = '', preStyles: string = '', oldTextAlign: string = '', postStyles: string = '') => {
+			/([^{]+)(?:\{ *?style=" *(.*? *?)(?:;? *?text-align: *.+?)?(;.+?)?;? *?" *?\})? */gu,
+			(_match: string, content: string = '', preStyles: string = '', postStyles: string = '') => {
+				const formatPrefix = (content.endsWith(' ') ? '' : ' ');
 				const alignPrefix = (preStyles ? '; ' : '');
-				return `${content} {style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}"}`;
+				return `${content}${formatPrefix}{style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}"}`;
 			},
 		)).join('\n\n');
 	}
@@ -97,8 +98,8 @@ export default class SimpleFormatterPlugin extends Plugin {
 	private indentText(text: string, indentIncrement: number): string {
 		if (this.settings.htmlMode) {
 			return text.replace(
-				/^(?:<(?i:p)(?: +(?i:style)=" *(.*? *)(;? *margin-left: *(\d+(?:\.\d+)?)em *)?(;.+?)?;? *")? *>(.*?)<\/ *(?i:p) *>|(.*?))$/gmu,
-				(_match: string, preStyles: string = '', oldIndentRule: string = '', oldIndentAmount: string = '', postStyles: string = '', tagContent: string = '', noTagContent: string = '') => {
+				/^(?:<(?i:p)(?: +(?i:style)=" *(.*? *)(?:;? *margin-left: *(\d+(?:\.\d+)?)em *)?(;.+?)?;? *")? *>(.*?)<\/ *(?i:p) *>|(.*?))$/gmu,
+				(_match: string, preStyles: string = '', oldIndentAmount: string = '', postStyles: string = '', tagContent: string = '', noTagContent: string = '') => {
 					const indentPrefix = (preStyles ? '; ' : '');
 					const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
 					return `<p style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}">${noTagContent || tagContent}</p>`;
@@ -106,11 +107,12 @@ export default class SimpleFormatterPlugin extends Plugin {
 			);
 		}
 		return text.split(/\n{2,}/g).map(paragraph => paragraph.replace(
-			/([^{]+)(?:\{ *?style=" *(.*? *?)(;? *?margin-left: *?(\d+(?:\.\d+)?)em *?)?(;.+?)?;? *?" *?\})? */gu,
-			(_match: string, content: string = '', preStyles: string = '', oldIndentRule: string = '', oldIndentAmount: string = '', postStyles: string = '') => {
+			/([^{]+)(?:\{ *?style=" *(.*? *?)(?:;? *?margin-left: *?(\d+(?:\.\d+)?)em *?)?(;.+?)?;? *?" *?\})? */gu,
+			(_match: string, content: string = '', preStyles: string = '', oldIndentAmount: string = '', postStyles: string = '') => {
+				const formatPrefix = (content.endsWith(' ') ? '' : ' ');
 				const indentPrefix = (preStyles ? '; ' : '');
 				const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
-				return `${content}{style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}"}`;
+				return `${content}${formatPrefix}{style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}"}`;
 			},
 		)).join('\n\n');
 	}
