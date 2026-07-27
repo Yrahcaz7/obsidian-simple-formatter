@@ -79,7 +79,7 @@ export default class SimpleFormatterPlugin extends Plugin {
 		if (this.settings.htmlMode) {
 			return lines.replace(
 				/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
-				(_match, preStyles = '', oldTextAlign = '', postStyles = '', tagContent = '', noTagContent = '') => {
+				(_match: string, preStyles: string = '', oldTextAlign: string = '', postStyles: string = '', tagContent: string = '', noTagContent: string = '') => {
 					const alignPrefix = (oldTextAlign.startsWith(';') ? '; ' : '');
 					return `<p style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}">${noTagContent || tagContent}</p>`;
 				},
@@ -87,7 +87,7 @@ export default class SimpleFormatterPlugin extends Plugin {
 		}
 		return lines.replace(
 			/^(.*?)\s*(?:\{\s*style="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*"\s*\})?\s*$/gmu,
-			(_match, content = '', preStyles = '', oldTextAlign = '', postStyles = '') => {
+			(_match: string, content: string = '', preStyles: string = '', oldTextAlign: string = '', postStyles: string = '') => {
 				const alignPrefix = (oldTextAlign.startsWith(';') ? '; ' : '');
 				return `${content} {style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}"}`;
 			},
@@ -98,7 +98,7 @@ export default class SimpleFormatterPlugin extends Plugin {
 		if (this.settings.htmlMode) {
 			return lines.replace(
 				/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+(?:\.\d+)?)em\s*)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
-				(_match, preStyles = '', oldIndentRule = '', oldIndentAmount = '', postStyles = '', tagContent = '', noTagContent = '') => {
+				(_match: string, preStyles: string = '', oldIndentRule: string = '', oldIndentAmount: string = '', postStyles: string = '', tagContent: string = '', noTagContent: string = '') => {
 					const indentPrefix = (oldIndentRule.startsWith(';') ? '; ' : '');
 					const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
 					return `<p style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}">${noTagContent || tagContent}</p>`;
@@ -107,7 +107,7 @@ export default class SimpleFormatterPlugin extends Plugin {
 		}
 		return lines.replace(
 			/^(.*?)\s*(?:\{\s*style="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+(?:\.\d+)?)em\s*)?(;.+?)?;?\s*"\s*\})?\s*$/gmu,
-			(_match, content = '', preStyles = '', oldIndentRule = '', oldIndentAmount = '', postStyles = '') => {
+			(_match: string, content: string = '', preStyles: string = '', oldIndentRule: string = '', oldIndentAmount: string = '', postStyles: string = '') => {
 				const indentPrefix = (oldIndentRule.startsWith(';') ? '; ' : '');
 				const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
 				return `${content} {style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}"}`;
