@@ -93,8 +93,8 @@ class SimpleFormatPlugin implements PluginValue {
 
 	private getLineElement(view: EditorView, line: Line): HTMLElement | null {
 		try {
-			const node = view.domAtPos(line.from)?.node;
-			let element = (node instanceof HTMLElement ? node : node.parentElement);
+			const node = view.domAtPos(line.from).node;
+			let element = (node.instanceOf(HTMLElement) ? node : node.parentElement);
 			while (element !== null) {
 				if (element.classList.contains('cm-line')) return element;
 				element = element.parentElement;

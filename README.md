@@ -12,6 +12,9 @@ The available commands are as follows:
 - **Indent/Unindent line(s)** — Indent each line in the selected text.
 - **Insert Section Break** — Insert a section break.
 
+The formatting also works on embedded notes and images, but not callouts or tables.
+Note that aligning an embedded note will align the displayed *content* of the note (except the file name, if it is displayed).
+
 The commands can be customized using the following settings:
 
 - **HTML mode** — When enabled, HTML paragraphs are used for alignment and indentation.
@@ -23,17 +26,7 @@ The commands can be customized using the following settings:
 
 ## Experimental features
 
-When embedding a note inside another note, you can align the *content* of the embedded note (sans the tile) by using an `align` command, or manually adding the style definition:
-
-```markdown
-![[Embedded note]] {style="text-align: center"}
-```
-
-You can also indent the whole embedded note with the `indent` commands as well.
-
-## Unsupported features
-
-Currently, callouts and tables (as well as their contents) cannot be formatted by this plugin.
+Formatting inside comments (`%%`) should work, but the note's formatting may break until you interact with the note again.
 
 ## Installation
 
