@@ -33,7 +33,7 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 			heading: 'Indentation',
 			items: [{
 				name: 'Indentation amount',
-				desc: 'The amount of indentation used by the "indent/unindent line(s)" commands.',
+				desc: 'The amount of indentation used by the "indent/unindent paragraph(s)" commands.',
 				control: { type: 'slider', key: 'indentAmount', min: 1, max: 4, step: 0.5 },
 			}],
 		}, {
@@ -60,7 +60,7 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 
 		new Setting(this.containerEl)
 			.setName('HTML mode')
-			.setDesc('When enabled, HTML paragraphs are used for alignment and indentation. This has greater cross-compatability than the default, but it disallows Markdown syntax inside aligned and indented blocks. It also changes how such blocks are displayed in editing mode. (This only changes new placements, not old ones.)')
+			.setDesc('When enabled, HTML paragraphs are used for alignment and indentation. This has greater cross-compatability than the default, but it disallows Markdown syntax inside aligned and indented blocks. (This only changes new placements, not old ones.)')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.htmlMode)
 				.onChange(async value => {
@@ -74,7 +74,7 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 		indentationGroup.addSetting(setting => {
 			setting
 				.setName('Indentation amount')
-				.setDesc('The amount of indentation used by the "indent/unindent line(s)" commands.')
+				.setDesc('The amount of indentation used by the "indent/unindent paragraph(s)" commands.')
 				.addSlider(slider => slider
 					// The dynamic tooltip is still needed here, as display() is only used on versions prior to 1.13,
 					// and the inline display that replaces the tooltip was only added in version 1.13

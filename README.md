@@ -7,9 +7,9 @@ Optionally, you can use [Obsidian's Hotkeys feature](https://obsidian.md/help/ho
 
 The available commands are as follows:
 
-- **Align line(s) to left/center/right** — align each line in the selected text.
-- **Justify line(s)** — Justify each line in the selected text.
-- **Indent/Unindent line(s)** — Indent each line in the selected text.
+- **Align paragraph(s) to left/center/right** — align each paragraph in the selected text.
+- **Justify paragraph(s)** — Justify each paragraph in the selected text.
+- **Indent/Unindent paragraph(s)** — Indent each paragraph in the selected text.
 - **Insert Section Break** — Insert a section break.
 
 The formatting also works on embedded notes and images, but not callouts or tables.
@@ -19,7 +19,7 @@ The commands can be customized using the following settings:
 
 - **HTML mode** — When enabled, HTML paragraphs are used for alignment and indentation.
     This has greater cross-compatability than the default, but it disallows Markdown syntax inside aligned and indented blocks.
-- **Indentation amount** — The amount of indentation used by the "Indent/Unindent line(s)" commands.
+- **Indentation amount** — The amount of indentation used by the "Indent/Unindent paragraph(s)" commands.
 - **Section break indicator** — The characters inserted by the "Insert section break" command.
     Defaults to an asterism (`⁂`).
 - **Section break alignment** — The alignment of inserted section breaks. This can be *left*, *center*, or *right*.

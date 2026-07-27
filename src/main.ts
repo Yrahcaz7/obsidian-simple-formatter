@@ -12,44 +12,44 @@ export default class SimpleFormatterPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'align-to-left',
-			name: 'Align line(s) to left',
+			name: 'Align paragraph(s) to left',
 			icon: 'text-align-start',
-			editorCallback: editor => editor.replaceSelection(this.alignLines(editor.getSelection(), 'left')),
+			editorCallback: editor => editor.replaceSelection(this.alignText(editor.getSelection(), 'left')),
 		});
 
 		this.addCommand({
 			id: 'align-to-center',
-			name: 'Align line(s) to center',
+			name: 'Align paragraph(s) to center',
 			icon: 'text-align-center',
-			editorCallback: editor => editor.replaceSelection(this.alignLines(editor.getSelection(), 'center')),
+			editorCallback: editor => editor.replaceSelection(this.alignText(editor.getSelection(), 'center')),
 		});
 
 		this.addCommand({
 			id: 'align-to-right',
-			name: 'Align line(s) to right',
+			name: 'Align paragraph(s) to right',
 			icon: 'text-align-end',
-			editorCallback: editor => editor.replaceSelection(this.alignLines(editor.getSelection(), 'right')),
+			editorCallback: editor => editor.replaceSelection(this.alignText(editor.getSelection(), 'right')),
 		});
 
 		this.addCommand({
 			id: 'align-to-justify',
-			name: 'Justify line(s)',
+			name: 'Justify paragraph(s)',
 			icon: 'text-align-justify',
-			editorCallback: editor => editor.replaceSelection(this.alignLines(editor.getSelection(), 'justify')),
+			editorCallback: editor => editor.replaceSelection(this.alignText(editor.getSelection(), 'justify')),
 		});
 
 		this.addCommand({
 			id: 'increase-indentation',
-			name: 'Indent line(s)',
+			name: 'Indent paragraph(s)',
 			icon: 'list-indent-increase',
-			editorCallback: editor => editor.replaceSelection(this.indentLines(editor.getSelection(), this.settings.indentAmount)),
+			editorCallback: editor => editor.replaceSelection(this.indentText(editor.getSelection(), this.settings.indentAmount)),
 		});
 
 		this.addCommand({
 			id: 'decrease-indentation',
-			name: 'Unindent line(s)',
+			name: 'Unindent paragraph(s)',
 			icon: 'list-indent-decrease',
-			editorCallback: editor => editor.replaceSelection(this.indentLines(editor.getSelection(), -this.settings.indentAmount)),
+			editorCallback: editor => editor.replaceSelection(this.indentText(editor.getSelection(), -this.settings.indentAmount)),
 		});
 
 		this.addCommand({
@@ -57,7 +57,7 @@ export default class SimpleFormatterPlugin extends Plugin {
 			name: 'Insert section break',
 			icon: 'section',
 			editorCallback: editor => {
-				const sectionBreak = this.alignLines(this.settings.sectionBreak || DEFAULT_SETTINGS.sectionBreak, this.settings.sectionBreakAlign) + '\n';
+				const sectionBreak = this.alignText(this.settings.sectionBreak || DEFAULT_SETTINGS.sectionBreak, this.settings.sectionBreakAlign) + '\n';
 				const cursorPosition = editor.getCursor();
 				editor.replaceRange(sectionBreak, cursorPosition);
 				editor.setCursor(cursorPosition.line + 1, 0);
@@ -75,44 +75,44 @@ export default class SimpleFormatterPlugin extends Plugin {
 		this.addSettingTab(new SimpleFormatterSettingTab(this.app, this));
 	}
 
-	private alignLines(lines: string, newTextAlign: string): string {
+	private alignText(text: string, newTextAlign: string): string {
 		if (this.settings.htmlMode) {
-			return lines.replace(
-				/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
+			return text.replace(
+				/^(?:<(?i:p)(?: +(?i:style)=" *(.*? *)(;? *text-align: *.+?)?(;.+?)?;? *")? *>(.*?)<\/ *(?i:p) *>|(.*?))$/gmu,
 				(_match: string, preStyles: string = '', oldTextAlign: string = '', postStyles: string = '', tagContent: string = '', noTagContent: string = '') => {
-					const alignPrefix = (oldTextAlign.startsWith(';') ? '; ' : '');
+					const alignPrefix = (preStyles ? '; ' : '');
 					return `<p style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}">${noTagContent || tagContent}</p>`;
 				},
 			);
 		}
-		return lines.replace(
-			/^(.*?)\s*(?:\{\s*style="\s*(.*?\s*)(;?\s*text-align:\s*.+?)?(;.+?)?;?\s*"\s*\})?\s*$/gmu,
+		return text.split(/\n{2,}/g).map(paragraph => paragraph.replace(
+			/([^{]+)(?:\{ *?style=" *(.*? *?)(;? *?text-align: *.+?)?(;.+?)?;? *?" *?\})? */gu,
 			(_match: string, content: string = '', preStyles: string = '', oldTextAlign: string = '', postStyles: string = '') => {
-				const alignPrefix = (oldTextAlign.startsWith(';') ? '; ' : '');
+				const alignPrefix = (preStyles ? '; ' : '');
 				return `${content} {style="${preStyles}${alignPrefix}text-align: ${newTextAlign}${postStyles}"}`;
 			},
-		);
+		)).join('\n\n');
 	}
 
-	private indentLines(lines: string, indentIncrement: number): string {
+	private indentText(text: string, indentIncrement: number): string {
 		if (this.settings.htmlMode) {
-			return lines.replace(
-				/^(?:<(?i:p)(?:\s+(?i:style)="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+(?:\.\d+)?)em\s*)?(;.+?)?;?\s*")?\s*>(.*?)<\/\s*(?i:p)\s*>|(.*?))$/gmu,
+			return text.replace(
+				/^(?:<(?i:p)(?: +(?i:style)=" *(.*? *)(;? *margin-left: *(\d+(?:\.\d+)?)em *)?(;.+?)?;? *")? *>(.*?)<\/ *(?i:p) *>|(.*?))$/gmu,
 				(_match: string, preStyles: string = '', oldIndentRule: string = '', oldIndentAmount: string = '', postStyles: string = '', tagContent: string = '', noTagContent: string = '') => {
-					const indentPrefix = (oldIndentRule.startsWith(';') ? '; ' : '');
+					const indentPrefix = (preStyles ? '; ' : '');
 					const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
 					return `<p style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}">${noTagContent || tagContent}</p>`;
 				},
 			);
 		}
-		return lines.replace(
-			/^(.*?)\s*(?:\{\s*style="\s*(.*?\s*)(;?\s*margin-left:\s*(\d+(?:\.\d+)?)em\s*)?(;.+?)?;?\s*"\s*\})?\s*$/gmu,
+		return text.split(/\n{2,}/g).map(paragraph => paragraph.replace(
+			/([^{]+)(?:\{ *?style=" *(.*? *?)(;? *?margin-left: *?(\d+(?:\.\d+)?)em *?)?(;.+?)?;? *?" *?\})? */gu,
 			(_match: string, content: string = '', preStyles: string = '', oldIndentRule: string = '', oldIndentAmount: string = '', postStyles: string = '') => {
-				const indentPrefix = (oldIndentRule.startsWith(';') ? '; ' : '');
+				const indentPrefix = (preStyles ? '; ' : '');
 				const newIndentAmount = Math.max((+oldIndentAmount || 0) + indentIncrement, 0);
-				return `${content} {style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}"}`;
+				return `${content}{style="${preStyles}${indentPrefix}margin-left: ${newIndentAmount}em${postStyles}"}`;
 			},
-		);
+		)).join('\n\n');
 	}
 
 	private formatElement(element: Element) {
