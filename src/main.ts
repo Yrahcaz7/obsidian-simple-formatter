@@ -2,7 +2,7 @@ import { Plugin } from 'obsidian';
 import { DEFAULT_SETTINGS, SimpleFormatterPluginSettings, SimpleFormatterSettingTab } from './settings';
 import { simpleFormatPlugin } from './editor'
 
-const CONTAINER_ELEMENTS = new Set<string>(['BLOCKQUOTE', 'OL', 'UL']);
+const CONTAINER_ELEMENTS = new Set<string>(['BLOCKQUOTE', 'OL', 'SECTION', 'UL']);
 
 export default class SimpleFormatterPlugin extends Plugin {
 	settings!: SimpleFormatterPluginSettings;
@@ -122,11 +122,16 @@ export default class SimpleFormatterPlugin extends Plugin {
 			}
 			return;
 		}
+		let isFootnote = false;
 		if (element.lastChild instanceof Element) {
-			this.styleElement(element.lastChild);
-			return;
+			if (element.lastChild.classList.contains('footnote-backref')) {
+				isFootnote = true;
+			} else {
+				this.styleElement(element.lastChild);
+				return;
+			}
 		}
-		const contentNode = element.lastChild ?? element;
+		const contentNode = (isFootnote ? element.firstChild : element.lastChild) ?? element;
 		if (!contentNode.textContent?.endsWith('}')) {
 			return;
 		}

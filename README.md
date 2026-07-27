@@ -22,8 +22,6 @@ The commands can be customized using the following settings:
 
 ## Experimental features
 
-Formatting footnotes is currently supported in editing mode, but not reading mode.
-
 When embedding a note inside another note, you can align the *content* of the embedded note (sans the tile) by using an `align` command, or manually adding the style definition:
 
 ```markdown
