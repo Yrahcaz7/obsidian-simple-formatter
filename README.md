@@ -3,13 +3,14 @@
 This plugin integrates some simple formatting options into [Obsidian.md](https://obsidian.md).
 
 To use these options, select one or more lines of text in a note and open the [command palette](https://obsidian.md/help/plugins/command-palette).
+Optionally, you can use [Obsidian's Hotkeys feature](https://obsidian.md/help/hotkeys) for easier access.
 
 The available commands are as follows:
 
 - **Align line(s) to left/center/right** — align each line in the selected text.
 - **Justify line(s)** — Justify each line in the selected text.
 - **Indent/Unindent line(s)** — Indent each line in the selected text.
-- **Insert Section Break** — Insert a section break. This is especially useful with a keyboard shortcut (set in "Settings → Hotkeys").
+- **Insert Section Break** — Insert a section break.
 
 The commands can be customized using the following settings:
 
@@ -32,4 +33,10 @@ You can also indent the whole embedded note with the `indent` commands as well.
 
 ## Unsupported features
 
-Currently, the contents of callouts and tables cannot be formatted by this plugin.
+Currently, callouts and tables (as well as their contents) cannot be formatted by this plugin.
+
+## Installation
+
+The plugin is currently in beta, so it should be installed via the [BRAT plugin](https://github.com/TfTHacker/obsidian42-brat) (which can be [installed via Obsidian](https://obsidian.md/help/community-plugins#Install+a+community+plugin)).
+
+After installing BRAT, follow [BRAT's quick guide](https://tfthacker.com/brat-quick-guide), using `Yrahcaz7/obsidian-simple-formatter` as the link for steps 2 and 4.
