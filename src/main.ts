@@ -122,11 +122,16 @@ export default class SimpleFormatterPlugin extends Plugin {
 			}
 			return;
 		}
-		if (!element.innerHTML.endsWith('}')) {
+		if (element.lastChild instanceof Element) {
+			this.styleElement(element.lastChild);
+			return;
+		}
+		const contentNode = element.lastChild ?? element;
+		if (!contentNode.textContent?.endsWith('}')) {
 			return;
 		}
 		let childStyles = '';
-		element.innerHTML = element.innerHTML.replace(/\s*\{\s*style="([^"]+)"\s*\}$/u, (_match: string, styles: string) => {
+		contentNode.textContent = contentNode.textContent.replace(/\s*\{\s*style="([^"]+)"\s*\}$/u, (_match: string, styles: string) => {
 			childStyles = styles;
 			return '';
 		});
