@@ -76,8 +76,10 @@ export class SimpleFormatterSettingTab extends PluginSettingTab {
 				.setName('Indentation amount')
 				.setDesc('The amount of indentation used by the "indent/unindent line(s)" commands.')
 				.addSlider(slider => slider
-					.setLimits(1, 4, 0.5)
+					// The dynamic tooltip is still needed here, as display() is only used on versions prior to 1.13,
+					// and the inline display that replaces the tooltip was only added in version 1.13
 					.setDynamicTooltip()
+					.setLimits(1, 4, 0.5)
 					.setValue(this.plugin.settings.indentAmount)
 					.onChange(async value => {
 						this.plugin.settings.indentAmount = value;

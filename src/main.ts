@@ -68,7 +68,7 @@ export default class SimpleFormatterPlugin extends Plugin {
 
 		this.registerMarkdownPostProcessor(element => {
 			for (const child of element.children) {
-				this.styleElement(child);
+				this.formatElement(child);
 			}
 		});
 
@@ -115,31 +115,36 @@ export default class SimpleFormatterPlugin extends Plugin {
 		);
 	}
 
-	private styleElement(element: Element) {
+	private formatElement(element: Element) {
+		// Consider all element children of containers individually
 		if (CONTAINER_ELEMENTS.has(element.tagName)) {
 			for (const child of element.children) {
-				this.styleElement(child);
+				this.formatElement(child);
 			}
 			return;
 		}
+		// Traverse to the element child that most closely holds the text content
 		let isFootnote = false;
 		if (element.lastChild instanceof Element) {
 			if (element.lastChild.classList.contains('footnote-backref')) {
 				isFootnote = true;
 			} else {
-				this.styleElement(element.lastChild);
+				this.formatElement(element.lastChild);
 				return;
 			}
 		}
+		// Get node that holds the text content
 		const contentNode = (isFootnote ? element.firstChild : element.lastChild) ?? element;
 		if (!contentNode.textContent?.endsWith('}')) {
 			return;
 		}
+		// Parse and hide format syntax
 		let childStyles = '';
 		contentNode.textContent = contentNode.textContent.replace(/\s*\{\s*style="([^"]+)"\s*\}$/u, (_match: string, styles: string) => {
 			childStyles = styles;
 			return '';
 		});
+		// Apply formatting
 		const oldStyles = element.getAttribute('style');
 		element.setAttribute('style', (oldStyles ? `${oldStyles}; ${childStyles}` : childStyles));
 	}
